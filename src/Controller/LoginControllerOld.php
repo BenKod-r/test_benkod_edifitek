@@ -8,18 +8,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class LoginController extends AbstractController
+class LoginControllerOld extends AbstractController
 {
     /**
      * @param AuthenticationUtils $authenticationUtils
+     * @param Security $security
      * @return Response
      */
-    #[Route('/login', name: 'login')]
+//    #[Route('/login', name: 'login')]
     public function index(AuthenticationUtils $authenticationUtils, Security $security): Response
     {
-        if ($this->isGranted('ROLE_USER') && $this->getUser()) {
-            return $this->redirectToRoute('dashboard_choice');
-        }
+//        if ($this->isGranted('ROLE_USER') && $this->getUser()) {
+//            return $this->redirectToRoute('dashboard_choice');
+//        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
