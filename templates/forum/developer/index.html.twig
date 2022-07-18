@@ -1,0 +1,62 @@
+{% extends 'base_module.html.twig' %}
+
+{% block title %}
+    {{title|trans|capitalize}}
+{% endblock  %}
+{% block page_title %}
+    {{ title|trans|capitalize }}
+{% endblock %}
+
+{% block page_content %}
+    {{ form_start(form, {attr: {'class': 'd-flex align-items-center justify-content-end mb-4'}}) }}
+        {{ form_row(form.stack) }}
+        <style>
+            .form-check {
+                display: flex;
+                padding-left: 12px;
+            }
+        </style>
+        <div class="d-flex align-items-center m-0 px-2">
+            <p class="m-0">Disponibilité</p>
+            {{ form_label(form.isAvailable) }}
+            {{ form_widget(form.isAvailable) }}
+        </div>
+        <button class="btn btn-primary me-1" type="submit">Valider</button>
+        <a class="btn btn-danger" href="{{ path('app_developer_index') }}">Réinitialiser</a>
+    {{ form_end(form) }}
+    <div class="row">
+    {% for mentor in mentors %}
+        <div class="col-md-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center" style="min-height: 180px; opacity: {{ mentor.isAvailable ? 1 : 0.5 }}">
+                        <div class="col-12">
+                            <h4 class="text-muted fw-normal mt-0" title="Campaign Sent">{{ mentor.lastName ~ ' ' ~ mentor.firstName}}</h4>
+                            {% for stack in mentor.stack %}
+                                <h3 class="my-2 py-1">{{ stack.name }}</h3>
+                            {% endfor %}
+                            <p class="mb-0 text-muted d-flex justify-content-between align-items-center">
+                                {% if mentor.isAvailable %}
+                                    <span class="text-success me-2"><i class="mdi mdi-arrow-up-bold"></i>Disponible</span>
+                                {% else %}
+                                    <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i>Non disponible</span>
+                                {% endif %}
+                                <a href="{{ path('app_mentor_show', {'developer': app.user.id, 'mentor': mentor.id, 'questionSelected': 0}) }}" class="btn btn-success chat-send"><i class="uil uil-message"></i></a>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-end">
+                            </div>
+                        </div>
+                    </div> <!-- end row-->
+                </div> <!-- end card-body -->
+            </div> <!-- end card -->
+        </div> <!-- end col -->
+    {% else %}
+        <h1>Aucun mentor trouvé...</h1>
+    {% endfor %}
+    </div>
+    <script>
+        document.getElementById("filter_stack").removeAttribute("multiple");
+    </script>
+{% endblock %}

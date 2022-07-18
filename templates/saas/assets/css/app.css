@@ -63,7 +63,7 @@ File: Main Css File
   --ct-form-select-bg: var(--ct-input-bg);
   --ct-form-select-disabled-color: #98a6ad;
   --ct-form-select-disabled-bg: #eef2f7;
-  --ct-form-select-disabled-border-color: ;
+  --ct-form-select-disabled-border-color: #f1f3fa;
   --ct-form-select-indicator-color: #343a40;
   --ct-form-range-track-bg: #dee2e6;
   --ct-form-range-track-box-shadow: var(--ct-box-shadow-inset);
@@ -137,7 +137,7 @@ File: Main Css File
   --ct-popover-bg: #fff;
   --ct-popover-border-color: #dee2e6;
   --ct-popover-header-bg: #f1f3fa;
-  --ct-popover-header-color: ;
+  --ct-popover-header-color: #f1f3fa;
   --ct-popover-body-color: #6c757d;
   --ct-popover-arrow-color: #fff;
   --ct-popover-arrow-outer-color: #ced4da;
@@ -180,7 +180,7 @@ File: Main Css File
   --ct-code-color: #39afd1;
   --ct-kbd-color: #fff;
   --ct-kbd-bg: #313a46;
-  --ct-pre-color: ;
+  --ct-pre-color: #f1f3fa;
   --ct-bg-leftbar: #fff;
   --ct-menu-item: #6c757d;
   --ct-menu-item-hover: #727cf5;
@@ -291,7 +291,7 @@ body[data-layout-color=dark] {
   --ct-form-select-bg: var(--ct-input-bg);
   --ct-form-select-disabled-color: #ced4da;
   --ct-form-select-disabled-bg: #37404a;
-  --ct-form-select-disabled-border-color: ;
+  --ct-form-select-disabled-border-color: #f1f3fa;
   --ct-form-select-indicator-color: #e3eaef;
   --ct-form-range-track-bg: #464f5b;
   --ct-form-range-track-box-shadow: inset 0 .25rem .25rem rgba(0, 0, 0, 0.1);

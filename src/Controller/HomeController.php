@@ -11,11 +11,9 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        return $this->render('index.html.twig',
-        [
-            'add_search'          => false,
-            'title'               => 'tableau de bord',
-        ]);
+        return $this->isGranted("ROLE_MENTOR") ?
+           $this->redirectToRoute('app_mentor_index') :
+            $this->redirectToRoute('app_developer_index');
     }
 
 }

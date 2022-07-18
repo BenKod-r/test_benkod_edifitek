@@ -35,15 +35,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $createdAt;
 
-    #[ORM\Column(type: 'boolean', nullable: true)]
-    private $availablity;
-
     #[ORM\ManyToMany(targetEntity: Stack::class, inversedBy: 'users')]
     private $stack;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $isAvailable;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $profileImage;
+
+    #[ORM\OneToMany(mappedBy: 'developer', targetEntity: Question::class)]
+    private $questions;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: QuestionResponse::class)]
+    private $questionResponses;
 
     public function __construct()
     {
         $this->stack = new ArrayCollection();
+        $this->questions = new ArrayCollection();
+        $this->questionResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -152,18 +163,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isAvailablity(): ?bool
-    {
-        return $this->availablity;
-    }
-
-    public function setAvailablity(?bool $availablity): self
-    {
-        $this->availablity = $availablity;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Stack>
      */
@@ -184,6 +183,90 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeStack(Stack $stack): self
     {
         $this->stack->removeElement($stack);
+
+        return $this;
+    }
+
+    public function isIsAvailable(): ?bool
+    {
+        return $this->isAvailable;
+    }
+
+    public function setIsAvailable(?bool $isAvailable): self
+    {
+        $this->isAvailable = $isAvailable;
+
+        return $this;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?string $profileImage): self
+    {
+        $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Question>
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): self
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+            $question->setDeveloper($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        if ($this->questions->removeElement($question)) {
+            // set the owning side to null (unless already changed)
+            if ($question->getDeveloper() === $this) {
+                $question->setDeveloper(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuestionResponse>
+     */
+    public function getQuestionResponses(): Collection
+    {
+        return $this->questionResponses;
+    }
+
+    public function addQuestionResponse(QuestionResponse $questionResponse): self
+    {
+        if (!$this->questionResponses->contains($questionResponse)) {
+            $this->questionResponses[] = $questionResponse;
+            $questionResponse->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionResponse(QuestionResponse $questionResponse): self
+    {
+        if ($this->questionResponses->removeElement($questionResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($questionResponse->getAuthor() === $this) {
+                $questionResponse->setAuthor(null);
+            }
+        }
 
         return $this;
     }

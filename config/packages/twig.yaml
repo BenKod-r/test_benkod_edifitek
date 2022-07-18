@@ -3,6 +3,8 @@ twig:
     form_themes: [ 'bootstrap_5_layout.html.twig' ]
     globals:
         var_js: '@App\Service\JsVariable'
+        profile_image: '%profile_image%'
+        question_response_service: '@App\Service\QuestionResponseService'
 
 when@test:
     twig:

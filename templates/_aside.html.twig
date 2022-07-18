@@ -25,9 +25,22 @@
         {# Get current space #}
         <ul class="side-nav">
             <li class="side-nav-item menuitem-active">
-                <a data-bs-toggle="collapse" href="home" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
-                    <i class="uil-store"></i>
-                    <span>Test benkode</span>
+                {% if is_granted("ROLE_MENTOR") %}
+                    <a href="{{ path('app_mentor_index') }}" class="side-nav-link">
+                        <i class="uil-store"></i>
+                        <span>Dashboard</span>
+                        {# <span class="menu-arrow"></span> #}
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_developer_index') }}" class="side-nav-link">
+                        <i class="uil-store"></i>
+                        <span>Mentors</span>
+                        {# <span class="menu-arrow"></span> #}
+                    </a>
+                {% endif %}
+                <a href="{{ path('bonus') }}" class="side-nav-link">
+                    <i class="uil-code"></i>
+                    <span>Bonus</span>
                     {# <span class="menu-arrow"></span> #}
                 </a>
                 {# <div class="collapse show" id="sidebarEcommerce">

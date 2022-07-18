@@ -1,0 +1,281 @@
+{% extends 'base_module.html.twig' %}
+
+{% block title %}
+    {{title|trans|capitalize}}
+{% endblock  %}
+{% block page_title %}
+    {{title|trans|capitalize ~ ' ' ~ mentor.lastName ~ ' ' ~ mentor.firstName}}
+{% endblock %}
+
+{% block page_content %}
+    <div class="container-fluid">
+
+    <div class="row">
+        <!-- start chat users-->
+        <div class="col-xxl-3 col-xl-6 order-xl-1">
+            <div class="card" style="min-height: 707px;">
+                <div class="card-body p-0">
+                    <ul class="nav nav-tabs nav-bordered">
+                        <li class="nav-item w-100 text-center">
+                            <a href="#allUsers" data-bs-toggle="tab" aria-expanded="false" class="nav-link py-2 active">
+                                Liste de vos questions
+                            </a>
+                        </li>
+                    </ul> <!-- end nav-->
+                    <div class="tab-content">
+                        <div class="tab-pane show active p-3" id="newpost">
+
+                            <!-- users -->
+                            <div class="row">
+                                <div class="col">
+                                    <div data-simplebar="init" style="max-height: 550px"><div class="simplebar-wrapper" style="margin: 0px;">
+                                            <div class="simplebar-height-auto-observer-wrapper">
+                                                <div class="simplebar-height-auto-observer"></div>
+                                            </div>
+                                            <div class="simplebar-mask">
+                                                <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                                    <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;">
+                                                        <div class="simplebar-content" style="padding: 0px;">
+                                                            {% for question in questions %}
+                                                                <a href="{{ path('app_mentor_show', {'developer': developer.id, 'mentor': mentor.id, 'questionSelected': question.id})}}" class="text-body">
+                                                                    <div class="d-flex align-items-start{{ questionSelected is not null and questionSelected.id == question.id ? ' bg-light' : ' bg-light-lighten'}} p-2">
+                                                                        {#                                                                    <img src="assets/images/users/avatar-5.jpg" class="me-2 rounded-circle" height="48" alt="Shreyu N">#}
+                                                                        <div class="w-100 overflow-hidden">
+                                                                            <h5 class="mt-0 mb-0 font-14">
+                                                                                <span class="float-end text-muted font-12">{{ question.updatedAt|format_datetime(pattern = 'HH:mm', locale = 'fr') }}</span>
+                                                                                Le {{ question.updatedAt|format_datetime(pattern = 'dd MMMM Y', locale = 'fr') }}
+                                                                            </h5>
+                                                                            <p class="mt-1 mb-0 text-muted font-14">
+                                                                                {% if question_response_service.countQuestionResponseNotRead(app.user.id, question.id) > 0 %}
+                                                                                    <span class="w-25 float-end text-end"><span class="badge badge-danger-lighten">{{ question_response_service.countQuestionResponseNotRead(app.user.id, question.id) }}</span></span>
+                                                                                {% endif %}
+                                                                                <span class="w-75">{{ question.message }}</span>
+                                                                            </p>
+                                                                            <p class="mt-2 mb-0">
+                                                                                {% if question.isRead %}
+                                                                                    <span class="badge badge-success-lighten p-1 font-14 float-end">Lu</span>
+                                                                                {% else %}
+                                                                                    <span class="badge badge-danger-lighten p-1 font-14 float-end">Non lu</span>
+                                                                                {% endif %}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            {% else %}
+                                                                <p>Aucune question pour le moment</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="simplebar-placeholder" style="width: auto; height: 810px;">
+
+                                            </div>
+                                        </div>
+                                        <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+                                            <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+                                        </div>
+                                        <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+                                            <div class="simplebar-scrollbar" style="height: 373px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
+                                        </div>
+                                    </div> <!-- end slimscroll-->
+                                </div> <!-- End col -->
+                            </div>
+                            <!-- end users -->
+                        </div> <!-- end Tab Pane-->
+                    </div> <!-- end tab content-->
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div>
+        <!-- end chat users-->
+
+        <!-- chat area -->
+        <div class="col-xxl-6 col-xl-12 order-xl-2">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="conversation-list" data-simplebar="init" style="max-height: 537px">
+                        <div class="simplebar-wrapper" style="margin: 0px -15px;{{ questionSelected is null ? ' display: flex; align-items: center;' : '' }}">
+                            <div class="simplebar-height-auto-observer-wrapper">
+                                <div class="simplebar-height-auto-observer"></div>
+                            </div>
+                            {% if questionSelected is not null %}
+                                <div class="simplebar-mask">
+                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                        <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;">
+                                            <div class="simplebar-content" style="padding: 0px 15px;">
+                                                <div class="card border-secondary border">
+                                                    <div class="card-body">
+                                                        <div class="dropdown float-end">
+                                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false" style="position:absolute; top: -20px; right: -15px">
+                                                                <i class="mdi mdi-dots-horizontal"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-end">
+                                                                <!-- item-->
+                                                                {{ include('question/_delete_form.html.twig') }}
+                                                            </div>
+                                                        </div>
+                                                        <h5 class="card-title">{{ 'Question posée le ' ~ questionSelected.updatedAt|format_datetime(pattern = 'dd MMMM Y à HH:mm', locale = 'fr') }}</h5>
+                                                        <p class="card-text">
+                                                            {{ questionSelected.message }}
+                                                        </p>
+                                                    </div> <!-- end card-body-->
+                                                </div>
+                                                {% for response in questionSelected.questionResponses %}
+                                                    {% if response.author.id != app.user.id %}
+                                                        <li class="clearfix" id="message-{{ loop.index }}">
+                                                            <div class="chat-avatar">
+                                                                <img src="{{ asset(profile_image ~ '/' ~ response.author.profileImage) }}" class="rounded" alt="">
+                                                                <i>{{ response.updatedAt|format_datetime(pattern = 'HH:mm', locale = 'fr') }}</i>
+                                                            </div>
+                                                            <div class="conversation-text">
+                                                                <div class="ctext-wrap">
+                                                                    <i>{{ response.author.lastName ~ ' ' ~ response.author.firstname }} {{ response.updatedAt|date('d-m-Y') }}</i>
+                                                                    <p>
+                                                                        {{ response.message }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="clearfix odd" id="message-{{ loop.index }}">
+                                                            <div class="chat-avatar">
+                                                                <img src="{{ asset(profile_image ~ '/' ~ response.author.profileImage) }}" class="rounded" alt="">
+                                                                <i>{{ response.updatedAt|format_datetime(pattern = 'HH:mm', locale = 'fr') }}</i>
+                                                            </div>
+                                                            <div class="conversation-text">
+                                                                <div class="ctext-wrap">
+                                                                    <i>{{ response.author.lastName ~ ' ' ~ response.author.firstname }} {{ response.updatedAt|date('d-m-Y') }}</i>
+                                                                    <p>
+                                                                        {{ response.message }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="conversation-actions dropdown">
+                                                                <button class="btn btn-sm btn-link" data-bs-toggle="dropdown" aria-expanded="false"><i class="uil uil-ellipsis-v"></i></button>
+
+                                                                <div class="dropdown-menu">
+                                                                    {{ include('question_response/_delete_form.html.twig') }}
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <li>
+                                                        Pas encore de réponse...
+                                                    </li>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ asset('images/synermi.jpg') }}" style="width: 100%; opacity: 0.5">
+                                </div>
+                            {% endif %}
+                            <div class="simplebar-placeholder" style="width: auto; height: 931px;"></div>
+                        </div>
+                        <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+                            <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+                        </div>
+                        <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+                            <div class="simplebar-scrollbar" style="height: 309px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
+                        </div>
+                    </ul>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="mt-2 bg-light p-3 rounded">
+                                {% if questionSelected is not null %}
+                                    {{ form_start(formResponse, {'attr': {'class': 'needs-validation', 'id': 'chat-form'}}) }}
+                                        <div class="row">
+                                            <div class="col mb-2 mb-sm-0">
+                                                {% if mentor.isAvailable %}
+                                                    {{ form_widget(formResponse.message) }}
+                                                {% else %}
+                                                    {{ form_widget(formResponse.message, {'attr': {'disabled':'disabled', 'placeholder': 'Mentor non disponible'}}) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <div class="btn-group">
+                                                    <div class="d-grid">
+                                                        <button type="submit" class="btn btn-success chat-send" {{ mentor.isAvailable ? '' : 'disabled' }}><i class="uil uil-message"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end col -->
+                                        </div> <!-- end row-->
+                                    {{ form_end(formResponse) }}
+                                {% else %}
+                                    <form class="needs-validation" id="chat-form">
+                                        <div class="row">
+                                            <div class="col mb-2 mb-sm-0">
+                                                <input type="text" class="form-control border-0" placeholder="{{ mentor.isAvailable ? 'Veuillez sélectionner une question' : 'Mentor non disponible' }}" required="" {{ questionSelected is null or mentor.isAvailable == false ? 'disabled' : '' }}>
+                                                <div class="invalid-feedback">
+                                                    Entrez votre message
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <div class="btn-group">
+                                                    <div class="d-grid">
+                                                        <button type="submit" class="btn btn-success chat-send" disabled><i class="uil uil-message"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end col -->
+                                        </div> <!-- end row-->
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div> <!-- end col-->
+                    </div>
+                    <!-- end row -->
+                </div> <!-- end card-body -->
+            </div> <!-- end card -->
+        </div>
+        <!-- end chat area-->
+
+        <!-- start user detail -->
+        <div class="col-xxl-3 col-xl-6 order-xl-1 order-xxl-2">
+            <div class="card">
+                <div class="card-body" style="min-height: 707px;">
+                    <div class="mt-3 text-center">
+                        <img src="{{ asset(profile_image ~ '/' ~ mentor.profileImage) }}" alt="shreyu" class="img-thumbnail avatar-lg rounded-circle">
+                        <h4>{{ mentor.lastName ~ ' ' ~ mentor.firstName }}</h4>
+                        <p class="text-muted mt-2 font-14"><strong>{{ mentor.isAvailable ? 'Disponible' : 'Non disponible' }}</strong></p>
+                    </div>
+
+                    <div class="mt-3">
+                        <hr class="">
+
+                        <p class="mt-4 mb-1">
+                            <strong><i class="uil uil-at"></i> Email:</strong>
+                        </p>
+                        <p>{{ mentor.email }}</p>
+
+                        <p class="mt-3 mb-1"><strong><i class="uil uil-globe"></i> Spécialité(s):</strong></p>
+                        <p>
+                            {% for stack in mentor.stack %}
+                                {{ stack.name ~ (loop.index == mentor.stack|length ? '...' : ',') }}
+                            {% endfor %}
+                        </p>
+                        {% if mentor.isAvailable %}
+                            <p>
+                                <div class="mb-3">
+                                    {{ form_start(formQuestion) }}
+                                        <div class="mb-2">
+                                            <strong><i class="uil-envelope-question"></i> Nouvelle question</strong>
+                                        </div>
+                                        {{ form_row(formQuestion.message) }}
+                                        <button class="btn btn-primary btn-sm mt-2 float-end"><i class="uil uil-envelope-add me-1"></i>Envoyer</button>
+                                    {{ form_end(formQuestion) }}
+                                </div>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div> <!-- end card-body -->
+            </div> <!-- end card-->
+        </div> <!-- end col -->
+        <!-- end user detail -->
+    </div> <!-- end row-->
+
+</div>
+{% endblock %}

@@ -56,6 +56,71 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->add($user, true);
     }
 
+    /**
+     * @param $role
+     * @return array
+     */
+    public function findByRoles($role): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%' . $role . '%')
+            ->OrderBy('u.isAvailable', 'DESC')
+            ->addOrderBy('u.lastName', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @param $role
+     * @param $availability
+     * @return array
+     */
+    public function findByRolesAndAvailability($role, $availability): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%' . $role . '%')
+            ->andWhere('u.isAvailable = :availability')
+            ->setParameter('availability', $availability)
+            ->OrderBy('u.isAvailable', 'DESC')
+            ->addOrderBy('u.lastName', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @param $role
+     * @param $isAvailable
+     * @param null $stack
+     * @return array
+     */
+    public function findByRolesAndFilters($role, $isAvailable, $stack = null): array
+    {
+        $query = $this->createQueryBuilder('u')
+            ->join('u.stack', 's')
+            ->andWhere('u.roles LIKE :role')
+            ->andWhere('u.isAvailable = :isAvailable')
+            ->setParameter('role', '%' . $role . '%')
+            ->setParameter('isAvailable', $isAvailable)
+        ;
+
+        $query = $stack !== null ?
+            $query
+                ->andWhere('s.name = :stack')
+                ->setParameter('stack', $stack) :
+            $query
+        ;
+
+        return $query
+            ->OrderBy('u.lastName', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
